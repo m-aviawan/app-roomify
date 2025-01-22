@@ -2,24 +2,24 @@
 
 import React from 'react'
 import { IoClose } from 'react-icons/io5'
+import { IUseManageTenantSettingsHook } from '../types'
 
-const DeletePropertyConfirmation = ({
-  isPendingDeleteProperty,
-  isDeleted,
-  setDataForDelete,
+const DeleteTenantConfirmationPopup = ({
+  mutateDeleteAccount,
+  setPasswordForDelete,
   setIsSubmitting,
-  dataForDelete,
   setChange,
-  mutateDeleteProperty,
-}: {
-  isPendingDeleteProperty: boolean
-  isDeleted: boolean
-  setDataForDelete: any
-  setIsSubmitting: any
-  dataForDelete: any
-  setChange: any
-  mutateDeleteProperty: any
-}) => {
+  passwordForDelete,
+  isPendingDeleteAccount,
+}: Pick<
+  IUseManageTenantSettingsHook,
+  | 'mutateDeleteAccount'
+  | 'setPasswordForDelete'
+  | 'setIsSubmitting'
+  | 'setChange'
+  | 'passwordForDelete'
+  | 'isPendingDeleteAccount'
+>) => {
   return (
     <div className="fixed bg-black bg-opacity-25 backdrop-blur-sm w-full h-full z-[51] top-0 left-0 flex items-center justify-center p-5">
       <div className="bg-white shadow-md p-5 rounded-md flex flex-col gap-7 w-[400px]">
@@ -27,20 +27,17 @@ const DeletePropertyConfirmation = ({
           <IoClose
             className="hover:opacity-75 hover:cursor-pointer text-gray-900 "
             onClick={() => {
-              setDataForDelete({ password: '', id: '', name: '' })
+              setPasswordForDelete({ password: '' })
               setIsSubmitting(false)
             }}
           />
         </div>
         <hgroup className="flex flex-col mt-[-10px]">
           <h1 className="text-lg font-bold text-slate-800">
-            Confirm Property Deletion
+            Confirm Account Deletion
           </h1>
           <p className="text-sm font-light text-gray-500">
-            Are you sure you want to delete{' '}
-            <b className="text-gray-800 font-bold">{dataForDelete?.name}</b>{' '}
-            property? This action is permanent and cannot be undone. To proceed,
-            please enter your password for confirmation.
+            Are you sure you want to delete your account?
           </p>
         </hgroup>
         <div className="flex flex-col gap-3">
@@ -51,7 +48,7 @@ const DeletePropertyConfirmation = ({
             <input
               id="password"
               onChange={(e: any) => {
-                setDataForDelete((state: any) => {
+                setPasswordForDelete((state: any) => {
                   state.password = e.target.value
                   return state
                 })
@@ -68,7 +65,7 @@ const DeletePropertyConfirmation = ({
           <button
             type="button"
             onClick={() => {
-              setDataForDelete({ password: '', id: '', name: '' })
+              setPasswordForDelete({ password: '' })
               setIsSubmitting(false)
             }}
             className="px-5 hover:bg-slate-200 transition duration-100 active:scale-90 py-1.5 text-gray-700 text-sm font-bold rounded-full shadow-md border border-slate-100 "
@@ -78,14 +75,15 @@ const DeletePropertyConfirmation = ({
           <button
             type="button"
             disabled={
-              dataForDelete.password.length < 8 ||
-              isPendingDeleteProperty ||
-              isDeleted
+              passwordForDelete.password.length < 8 || isPendingDeleteAccount
             }
-            onClick={() => mutateDeleteProperty()}
+            onClick={() => {
+              setIsSubmitting(false)
+              mutateDeleteAccount()
+            }}
             className="disabled:bg-slate-300 disabled:text-white disabled:scale-100 disabled:opacity-100 px-5 hover:opacity-75 transition duration-100 active:scale-90 py-1.5 text-white text-sm font-bold rounded-full shadow-md border bg-gray-900 border-slate-100 "
           >
-            Delete Property
+            Delete Account
           </button>
         </div>
       </div>
@@ -93,4 +91,4 @@ const DeletePropertyConfirmation = ({
   )
 }
 
-export default DeletePropertyConfirmation
+export default DeleteTenantConfirmationPopup
